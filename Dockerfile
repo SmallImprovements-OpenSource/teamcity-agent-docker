@@ -19,12 +19,12 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
 RUN  easy_install -U pip && \
      pip install -U crcmod
 
-ENV CLOUD_SDK_VERSION 228.0.0
+ENV CLOUD_SDK_VERSION 233.0.0
 RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -cs) main" > /etc/apt/sources.list.d/google-cloud-sdk.list \
         && curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
         && apt-get update -qqy && apt-get install -qqy \
              google-cloud-sdk=${CLOUD_SDK_VERSION}-0 \
-             google-cloud-sdk-app-engine-java \
+             google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 \
         && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 ENV CHROME_DRIVER_VERSION 2.45
