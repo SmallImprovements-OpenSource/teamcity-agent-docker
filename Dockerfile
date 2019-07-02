@@ -38,4 +38,6 @@ ENV NVM_VERSION v0.34.0
 
 #For karma
 ENV CHROME_BIN=/usr/bin/chromium-browser
+USER buildagent
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
+USER root
