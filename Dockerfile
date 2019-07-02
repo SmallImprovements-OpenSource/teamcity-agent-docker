@@ -19,7 +19,8 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
 RUN  easy_install -U pip && \
      pip install -U crcmod
 
-ENV CLOUD_SDK_VERSION 245.0.0
+ENV CLOUD_SDK_VERSION 252.0.0
+
 RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -cs) main" > /etc/apt/sources.list.d/google-cloud-sdk.list \
         && curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
         && apt-get update -qqy && apt-get install -qqy \
@@ -27,7 +28,7 @@ RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -cs)
              google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 \
         && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-ENV CHROME_DRIVER_VERSION 2.45
+ENV CHROME_DRIVER_VERSION 76.0.3809.25
 RUN curl -Ls https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip > ~/chromedriver.zip \
     && unzip ~/chromedriver.zip -d /usr/bin \
     && rm ~/chromedriver.zip
@@ -43,7 +44,7 @@ RUN adduser --disabled-password --gecos "" teamcity-agent &&\
 
 # Install node version manager
 USER teamcity-agent
-ENV NVM_VERSION v0.33.11
+ENV NVM_VERSION v0.34.0
 
 #For karma
 ENV CHROME_BIN=/usr/bin/chromium
