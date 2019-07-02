@@ -7,6 +7,7 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
         gconf2 \
         unzip \
         curl \
+        build-essential \
         libfontconfig \
         python-crcmod \
         gnupg2 \
