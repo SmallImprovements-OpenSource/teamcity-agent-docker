@@ -1,7 +1,7 @@
 FROM jetbrains/teamcity-minimal-agent:2019.1.1
 
 RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
-        chromium-bsu\
+        chromium-browser\
         bzip2 \
         apt-utils \
         gconf2 \
@@ -24,7 +24,7 @@ RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -cs)
              google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 \
         && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-ENV CHROME_DRIVER_VERSION 2.45
+ENV CHROME_DRIVER_VERSION 75.0.3770.90
 RUN curl -Ls https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip > ~/chromedriver.zip \
     && unzip ~/chromedriver.zip -d /usr/bin \
     && rm ~/chromedriver.zip
