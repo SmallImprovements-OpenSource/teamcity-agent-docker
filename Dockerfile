@@ -28,6 +28,7 @@ RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -cs)
 ENV CHROME_DRIVER_VERSION 75.0.3770.90
 RUN curl -Ls https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip > ~/chromedriver.zip \
     && unzip ~/chromedriver.zip -d /usr/bin \
+    && chmod +x /usr/bin/chromedriver \
     && rm ~/chromedriver.zip
 
 RUN gcloud config set core/disable_usage_reporting true && \
@@ -38,6 +39,7 @@ ENV NVM_VERSION v0.34.0
 
 #For karma
 ENV CHROME_BIN=/usr/bin/chromium-browser
+
 USER buildagent
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
 USER root
