@@ -13,6 +13,7 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
         gnupg2 \
         apt-transport-https \
         openssh-client \
+        zip \
         git;
 
 ENV CLOUD_SDK_VERSION 286.0.0
