@@ -39,3 +39,7 @@ ENV CHROME_BIN=/usr/bin/chromium-browser
 USER buildagent
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
 USER root
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && apt install  -y --no-install-recommends yarn
