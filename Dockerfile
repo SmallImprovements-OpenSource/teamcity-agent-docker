@@ -1,7 +1,8 @@
 FROM jetbrains/teamcity-minimal-agent:2019.2.2
 
 RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
-        chromium-browser\
+        chromium-browser \
+        chromium-driver \
         bzip2 \
         apt-utils \
         gconf2 \
@@ -14,32 +15,26 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
         apt-transport-https \
         openssh-client \
         zip \
-        git;
+        git && rm -rf /var/lib/apt/lists/*;
 
-ENV CLOUD_SDK_VERSION 288.0.0
-
-# from https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu?hl=de
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk=${CLOUD_SDK_VERSION}-0 google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 -y
-
-ENV CHROME_DRIVER_VERSION 81.0.4044.69
-RUN curl -Ls https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip > ~/chromedriver.zip \
-    && unzip ~/chromedriver.zip -d /usr/bin \
-    && chmod +x /usr/bin/chromedriver \
-    && rm ~/chromedriver.zip
-
-RUN gcloud config set core/disable_usage_reporting true --installation && \
-    gcloud config set component_manager/disable_update_check true --installation && \
-    gcloud config set metrics/environment github_docker_image --installation
-
-ENV NVM_VERSION v0.35.3
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && apt-get install  -y --no-install-recommends yarn
 
 #For karma
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
 USER buildagent
-RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
-USER root
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt update && apt install  -y --no-install-recommends yarn
+ENV CLOUD_SDK_VERSION 288.0.0
+RUN curl -Ls https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz > /tmp/gcloud-sdk.tar.gz \
+    && tar -xzf /tmp/gcloud-sdk.tar.gz -C ~/ \
+    && rm /tmp/gcloud-sdk.tar.gz
+
+RUN ~/google-cloud-sdk/install.sh --quiet  --additional-components=app-engine-java --path-update true  --command-completion true --usage-reporting false
+
+RUN ~/google-cloud-sdk/bin/gcloud config set component_manager/disable_update_check true --installation && \
+    ~/google-cloud-sdk/bin/gcloud config set metrics/environment github_docker_image --installation
+
+ENV NVM_VERSION v0.35.3
+RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
