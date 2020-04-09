@@ -16,12 +16,12 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
         zip \
         git;
 
-ENV CLOUD_SDK_VERSION 286.0.0
+ENV CLOUD_SDK_VERSION 288.0.0
 
 # from https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu?hl=de
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk=${CLOUD_SDK_VERSION}-0 google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 -y
 
-ENV CHROME_DRIVER_VERSION 80.0.3987.106
+ENV CHROME_DRIVER_VERSION 81.0.4044.69
 RUN curl -Ls https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip > ~/chromedriver.zip \
     && unzip ~/chromedriver.zip -d /usr/bin \
     && chmod +x /usr/bin/chromedriver \
