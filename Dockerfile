@@ -41,5 +41,3 @@ RUN ~/google-cloud-sdk/bin/gcloud config set component_manager/disable_update_ch
 
 ENV NVM_VERSION v0.35.3
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
-
-USER root
