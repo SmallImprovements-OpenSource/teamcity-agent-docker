@@ -20,7 +20,18 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
 ENV CLOUD_SDK_VERSION 288.0.0
 
 # from https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu?hl=de
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk=${CLOUD_SDK_VERSION}-0 google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 -y
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && \
+    apt-get install -y \
+    google-cloud-sdk=${CLOUD_SDK_VERSION}-0 \
+    google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 \
+    google-cloud-sdk-datastore-emulator=${CLOUD_SDK_VERSION}-0
+
+ENV DATASTORE_DATASET=shopping-game-hrd
+ENV DATASTORE_EMULATOR_HOST=localhost:8881
+ENV DATASTORE_EMULATOR_HOST_PATH=localhost:8881/datastore
+ENV DATASTORE_HOST=http://localhost:8881
+ENV DATASTORE_PROJECT_ID=shopping-game-hrd
+
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
     gcloud config set component_manager/disable_update_check true --installation && \
