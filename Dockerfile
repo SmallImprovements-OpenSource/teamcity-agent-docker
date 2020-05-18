@@ -26,11 +26,12 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION}-0 \
     google-cloud-sdk-datastore-emulator=${CLOUD_SDK_VERSION}-0
 
-ENV DATASTORE_DATASET=shopping-game-hrd
+# datastore/emulator configuration
+ENV DATASTORE_DATASET=praisemanager-dataset
 ENV DATASTORE_EMULATOR_HOST=localhost:8881
 ENV DATASTORE_EMULATOR_HOST_PATH=localhost:8881/datastore
 ENV DATASTORE_HOST=http://localhost:8881
-ENV DATASTORE_PROJECT_ID=shopping-game-hrd
+ENV DATASTORE_PROJECT_ID=praisemanager
 
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
