@@ -27,11 +27,12 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     google-cloud-sdk-datastore-emulator=${CLOUD_SDK_VERSION}-0
 
 # datastore/emulator configuration
-ENV DATASTORE_DATASET=praisemanager-dataset
-ENV DATASTORE_EMULATOR_HOST=localhost:8881
-ENV DATASTORE_EMULATOR_HOST_PATH=localhost:8881/datastore
-ENV DATASTORE_HOST=http://localhost:8881
-ENV DATASTORE_PROJECT_ID=praisemanager
+# these were breaking objectify 5 already, only uncomment when all our code can use the emultaor
+#ENV DATASTORE_DATASET=praisemanager-dataset
+#ENV DATASTORE_EMULATOR_HOST=localhost:8881
+#ENV DATASTORE_EMULATOR_HOST_PATH=localhost:8881/datastore
+#ENV DATASTORE_HOST=http://localhost:8881
+#ENV DATASTORE_PROJECT_ID=praisemanager
 
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
