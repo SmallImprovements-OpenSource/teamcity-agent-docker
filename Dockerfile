@@ -1,21 +1,22 @@
-FROM jetbrains/teamcity-minimal-agent:2019.2.2
+FROM jetbrains/teamcity-minimal-agent:2021.2.3
 ENV DEBIAN_FRONTEND=noninteractive
+USER root
 RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
-        chromium-browser\
-        chromium-driver \
-        bzip2 \
-        apt-utils \
-        gconf2 \
-        unzip \
-        curl \
-        build-essential \
-        libfontconfig \
-        python-crcmod \
-        gnupg2 \
-        apt-transport-https \
-        openssh-client \
-        zip \
-        git;
+    chromium-browser\
+    chromium-driver \
+    bzip2 \
+    apt-utils \
+    gconf2 \
+    unzip \
+    curl \
+    build-essential \
+    libfontconfig \
+    python3-crcmod \
+    gnupg2 \
+    apt-transport-https \
+    openssh-client \
+    zip \
+    git;
 
 ENV CLOUD_SDK_VERSION 376.0.0
 
