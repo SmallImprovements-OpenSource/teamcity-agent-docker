@@ -45,7 +45,7 @@ RUN gcloud config set core/disable_usage_reporting true --installation && \
 ENV NVM_VERSION v0.35.3
 
 #For karma
-ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROME_BIN=/usr/bin/google-chrome-stable
 
 USER buildagent
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
