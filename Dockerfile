@@ -18,6 +18,8 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
     zip \
     git;
 
+RUN snap install chromium
+
 ENV CLOUD_SDK_VERSION 376.0.0
 
 # from https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu?hl=de
