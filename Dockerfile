@@ -2,8 +2,6 @@ FROM jetbrains/teamcity-minimal-agent:2022.04.3
 ENV DEBIAN_FRONTEND=noninteractive
 USER root
 RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
-    chromium-browser\
-    chromium-driver \
     bzip2 \
     apt-utils \
     gconf2 \
@@ -18,7 +16,8 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
     zip \
     git;
 
-RUN snap install chromium
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo apt install google-chrome-stable_current_amd64.deb
+RUN wget https://chromedriver.storage.googleapis.com/104.0.5112.79/chromedriver_linux64.zip && unzip ./chromedriver_linux64.zip && mv chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
 
 ENV CLOUD_SDK_VERSION 376.0.0
 
