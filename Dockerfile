@@ -1,4 +1,4 @@
-FROM jetbrains/teamcity-minimal-agent:2022.04.3
+FROM jetbrains/teamcity-minimal-agent:2024.03.1
 ENV DEBIAN_FRONTEND=noninteractive
 USER root
 RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
