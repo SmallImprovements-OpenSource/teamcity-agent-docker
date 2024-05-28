@@ -18,7 +18,7 @@ RUN apt-get -qqy update &&  apt-get install -y --no-install-recommends\
     git;
 
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb
-RUN wget https://chromedriver.storage.googleapis.com/104.0.5112.79/chromedriver_linux64.zip && unzip ./chromedriver_linux64.zip && mv chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
+RUN wget https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.78/linux64/chromedriver-linux64.zip && unzip ./chromedriver-linux64.zip && mv chromedriver-linux64/chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
 
 ENV CLOUD_SDK_VERSION 410.0.0-0
 
