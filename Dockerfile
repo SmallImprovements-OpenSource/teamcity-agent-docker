@@ -29,17 +29,30 @@ RUN apt-get -qqy update && apt-get install -y --no-install-recommends \
     xauth \
     xvfb
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb
-RUN wget https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.84/linux64/chromedriver-linux64.zip && unzip ./chromedriver-linux64.zip && mv chromedriver-linux64/chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
+RUN apt-get install -y --no-install-recommends chromium-browser
+RUN wget --quiet https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.84/linux64/chromedriver-linux64.zip && unzip ./chromedriver-linux64.zip && mv chromedriver-linux64/chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
 
-ENV CLOUD_SDK_VERSION 546.0.0-0
+ENV CLOUD_SDK_VERSION 546.0.0
+ENV PYTHON_VERSION 3.11
+ENV PYTHON_PATCH_VERSION $PYTHON_VERSION.14
+ENV CLOUDSDK_PYTHON /usr/local/bin/python$PYTHON_VERSION
 
-# from https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu?hl=de
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && apt-get update -y && apt-get install google-cloud-sdk=${CLOUD_SDK_VERSION} google-cloud-sdk-app-engine-java=${CLOUD_SDK_VERSION} google-cloud-sdk-datastore-emulator=${CLOUD_SDK_VERSION} google-cloud-sdk-firestore-emulator=${CLOUD_SDK_VERSION} google-cloud-sdk-app-engine-python=${CLOUD_SDK_VERSION} -y
+# Python >= 3.9 is required by Google Cloud SDK
+RUN apt install -y libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev && wget --quiet https://www.python.org/ftp/python/${PYTHON_PATCH_VERSION}/Python-${PYTHON_PATCH_VERSION}.tgz && tar -xf Python-${PYTHON_PATCH_VERSION}.tgz && cd Python-${PYTHON_PATCH_VERSION} && ./configure --enable-optimizations && make -j4 && make altinstall
+RUN $CLOUDSDK_PYTHON --version
+
+# More recent versions of Google Cloud SDK do not seem to be available for Ubuntu 20.04 on their PPA.
+# We therefore use versioned archived to install the correct version.
+# For Google Cloud SDK to be available to non-root users, we need to install it using buildagent
+USER buildagent
+RUN cd /home/buildagent && wget --quiet https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz && tar -xzf ./google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz
+RUN cd /home/buildagent && ./google-cloud-sdk/install.sh --additional-components app-engine-java cloud-datastore-emulator cloud-firestore-emulator app-engine-python
+ENV PATH="$PATH:/home/buildagent/google-cloud-sdk/bin"
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
     gcloud config set component_manager/disable_update_check true --installation && \
     gcloud config set metrics/environment github_docker_image --installation
+USER root
 
 ENV NVM_VERSION v0.35.3
 
