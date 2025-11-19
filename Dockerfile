@@ -43,7 +43,7 @@ RUN $CLOUDSDK_PYTHON --version
 
 # JDK 21+ is required by the Google Cloud SDK
 RUN apt-get install -y --no-install-recommends openjdk-21-jdk
-RUN rm -Rf /opt/java/openjdk
+RUN mv /opt/java/openjdk /home/buildagent/jre
 RUN ln -s /usr/lib/jvm/java-1.21.0-openjdk-* /opt/java/openjdk
 RUN java --version
 
