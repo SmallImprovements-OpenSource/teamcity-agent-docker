@@ -41,26 +41,23 @@ ENV CLOUDSDK_PYTHON /usr/local/bin/python$PYTHON_VERSION
 RUN apt install -y libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev && wget --quiet https://www.python.org/ftp/python/${PYTHON_PATCH_VERSION}/Python-${PYTHON_PATCH_VERSION}.tgz && tar -xf Python-${PYTHON_PATCH_VERSION}.tgz && cd Python-${PYTHON_PATCH_VERSION} && ./configure --enable-optimizations && make -j4 && make altinstall
 RUN $CLOUDSDK_PYTHON --version
 
-# JDK 21+ is required by the Google Cloud SDK
-RUN apt-get install -y --no-install-recommends openjdk-21-jdk
-RUN rm -Rf /opt/java/openjdk
-RUN ln -s /usr/lib/jvm/java-1.21.0-openjdk-* /opt/java/openjdk
-RUN java --version
-
-USER buildagent
-
 # More recent versions of Google Cloud SDK do not seem to be available for Ubuntu 20.04 on their PPA.
-# We therefore use versioned archives to install the correct version.
-# For Google Cloud SDK to be available to non-root users, we need to install it as buildagent
+# We therefore use versioned archived to install the correct version.
+# For Google Cloud SDK to be available to non-root users, we need to install it using buildagent
+USER buildagent
 RUN cd /home/buildagent && wget --quiet https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz && tar -xzf ./google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz
 RUN cd /home/buildagent && ./google-cloud-sdk/install.sh --additional-components app-engine-java cloud-datastore-emulator cloud-firestore-emulator app-engine-python
 ENV PATH="$PATH:/home/buildagent/google-cloud-sdk/bin"
-RUN gcloud --version
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
     gcloud config set component_manager/disable_update_check true --installation && \
     gcloud config set metrics/environment github_docker_image --installation
+USER root
 
 ENV NVM_VERSION v0.35.3
 
+# For karma
+ENV CHROME_BIN=/usr/bin/google-chrome-stable
+
+USER buildagent
 RUN curl -so- https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | sh
