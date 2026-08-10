@@ -53,8 +53,9 @@ USER buildagent
 # We therefore use versioned archives to install the correct version.
 # For Google Cloud SDK to be available to non-root users, we need to install it as buildagent
 RUN cd /home/buildagent && wget --quiet https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz && tar -xzf ./google-cloud-cli-${CLOUD_SDK_VERSION}-linux-$(uname -m | sed 's/aarch64/arm/').tar.gz
-RUN cd /home/buildagent && ./google-cloud-sdk/install.sh --additional-components app-engine-java cloud-datastore-emulator cloud-firestore-emulator app-engine-python
+RUN cd /home/buildagent && ./google-cloud-sdk/install.sh --additional-components beta app-engine-java cloud-datastore-emulator cloud-firestore-emulator app-engine-python
 ENV PATH="$PATH:/home/buildagent/google-cloud-sdk/bin"
+ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1
 RUN gcloud --version
 
 RUN gcloud config set core/disable_usage_reporting true --installation && \
