@@ -29,9 +29,6 @@ RUN apt-get -qqy update && apt-get install -y --no-install-recommends \
     xauth \
     xvfb
 
-RUN apt-get install -y --no-install-recommends chromium-browser
-RUN wget --quiet https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.84/linux64/chromedriver-linux64.zip && unzip ./chromedriver-linux64.zip && mv chromedriver-linux64/chromedriver /usr/bin/chromedriver && chown 1000:1000 /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
-
 ENV CLOUD_SDK_VERSION 546.0.0
 ENV PYTHON_VERSION 3.11
 ENV PYTHON_PATCH_VERSION $PYTHON_VERSION.14
@@ -46,6 +43,21 @@ RUN apt-get install -y --no-install-recommends openjdk-21-jdk
 RUN mv /opt/java/openjdk /opt/buildagent/jre
 RUN ln -s /usr/lib/jvm/java-21-openjdk-* /opt/java/openjdk
 RUN java --version
+
+# Google no longer distribute builds compatible with this base image, so instead we install chromium and chromedriver from a Debian package.
+RUN wget -qO /tmp/debian-keyring.deb https://deb.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2023.3+deb12u2_all.deb \
+    && dpkg -x /tmp/debian-keyring.deb /tmp/debian-keyring \
+    && cat /tmp/debian-keyring/usr/share/keyrings/debian-archive-bookworm-automatic.gpg /tmp/debian-keyring/usr/share/keyrings/debian-archive-bookworm-stable.gpg > /usr/share/keyrings/debian-bookworm-chromium.gpg \
+    && rm -rf /tmp/debian-keyring.deb /tmp/debian-keyring \
+    && echo "deb [signed-by=/usr/share/keyrings/debian-bookworm-chromium.gpg] https://deb.debian.org/debian bookworm main" > /etc/apt/sources.list.d/debian-chromium.list \
+    && printf 'Package: *\nPin: release o=Debian\nPin-Priority: 100\n' > /etc/apt/preferences.d/debian-chromium \
+    && apt-get -qqy update \
+    && apt-get install -y -t bookworm --no-install-recommends chromium chromium-driver \
+    && ln -sf /usr/bin/chromium /usr/bin/chromium-browser \
+    && chown 1000:1000 /usr/bin/chromedriver \
+    && chmod +x /usr/bin/chromedriver \
+    && rm -f /etc/apt/sources.list.d/debian-chromium.list /etc/apt/preferences.d/debian-chromium \
+    && apt-get -qqy update
 
 USER buildagent
 
