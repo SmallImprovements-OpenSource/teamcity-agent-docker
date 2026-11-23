@@ -29,7 +29,7 @@ RUN apt-get -qqy update && apt-get install -y --no-install-recommends \
     xauth \
     xvfb
 
-ENV CLOUD_SDK_VERSION 546.0.0
+ENV CLOUD_SDK_VERSION 594.0.1
 ENV PYTHON_VERSION 3.11
 ENV PYTHON_PATCH_VERSION $PYTHON_VERSION.14
 ENV CLOUDSDK_PYTHON /usr/local/bin/python$PYTHON_VERSION
